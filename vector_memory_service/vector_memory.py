@@ -12,9 +12,3 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 CMD ["python", "vector_memory.py"]
-
-#   git clone https://github.com/tehnoservisdnepr/vector_memory_service.git temp_repo
-#   cp temp_repo/*.docx .
-#   rm -rf temp_repo
-#   python3 indexer.py
-#
