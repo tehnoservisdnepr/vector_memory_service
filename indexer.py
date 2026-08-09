@@ -42,7 +42,7 @@ def main():
     ignored_files = load_ignored_files()
     
     # Получаем список всех поддерживаемых файлов в текущей директории
-    all_files = [f for f in os.listdir(".") if f.endswith((".docx", ".txt"))]
+    all_files = [f for f in os.listdir(".") if f.endswith(".docx")]
     
     # Фильтруем: исключаем уже обработанные И файлы из черного списка
     files_to_process = [
