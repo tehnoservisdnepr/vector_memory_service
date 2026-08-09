@@ -1,4 +1,7 @@
 import os
+import glob
+import docx
+from sentence_transformers import SentenceTransformer
 
 PROCESSED_LOG = "processed_files.txt"
 
@@ -12,8 +15,17 @@ def mark_as_processed(filename):
     with open(PROCESSED_LOG, "a", encoding="utf-8") as f:
         f.write(filename + "\n")
 
+def extract_text_from_docx(file_path):
+    doc = docx.Document(file_path)
+    fullText = []
+    for para in doc.paragraphs:
+        if para.text.strip():
+            fullText.append(para.text.strip())
+    return fullText
+
 def main():
     print("Инициализация поискового модуля...")
+    model = SentenceTransformer('all-MiniLM-L6-v2')
     
     # Загружаем список уже обработанных файлов
     processed_files = load_processed_files()
@@ -36,14 +48,14 @@ def main():
         print(f"\n--- Обработка документа: {filename} ---")
         
         try:
-            # ЗДЕСЬ НАХОДИТСЯ ВАШ КОД ЧТЕНИЯ ДОКУМЕНТА,
-            # ГЕНЕРАЦИИ ЭМБЕДДИНГОВ И СОХРАНЕНИЯ В БАЗУ
-            # ----------------------------------------
-            # Пример: 
-            # text = read_docx(filename)
-            # embeddings = generate_embeddings(text)
-            # save_to_vector_db(filename, embeddings)
-            # ----------------------------------------
+            paragraphs = extract_text_from_docx(filename)
+            print(f"Найдено абзацев: {len(paragraphs)}")
+
+            if paragraphs:
+                # Генерируем эмбеддинги для абзацев
+                embeddings = model.encode(paragraphs, show_progress_bar=True)
+                print(f"Успешно сгенерировано векторов: {len(embeddings)}")
+                # Здесь в будущем сохраним векторы в базу/файл для быстрого поиска
 
             # После успешного завершения фиксируем файл в реестре
             mark_as_processed(filename)
@@ -52,5 +64,4 @@ def main():
         except Exception as e:
             print(f"Ошибка при обработке файла {filename}: {e}")
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__main__"
